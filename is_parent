@@ -1,0 +1,80 @@
+"""
+ФОРМАТ ВХОДНЫХ ДАННЫХ:
+В первой строке входных данных содержится целое число n - число классов.
+
+В следующих n строках содержится описание наследования классов. В i-й строке указано от каких классов наследуется i-й класс. 
+Класс может ни от кого не наследоваться. 
+Гарантируется, что класс не наследуется сам от себя (прямо или косвенно), 
+что класс не наследуется явно от одного класса более одного раза.
+
+В следующей строке содержится число q - количество запросов.
+
+В следующих q строках содержится описание запросов в формате <имя класса 1> <имя класса 2>.
+Имя класса – строка, состоящая из символов латинского алфавита, длины не более 50.
+
+ФОРМАТ ВЫХОДНЫХ ДАННЫХ:
+Для каждого запроса выведите в отдельной строке слово "Yes", если класс 1 является предком класса 2, и "No", если не является.
+"""
+
+def is_parent(parent, child):
+    if parent in classes_info[child]:
+        return 'Yes'
+    else:
+        for k in classes_info[child]:
+            if k not in classes_info:
+                continue
+            if is_parent(parent, k) is None:
+                continue
+            else:
+                return is_parent(parent, k)
+
+def main():
+	all_classes = set()
+    classes_info = {}
+    classes_number = int(input())
+    for i in range(classes_number):
+        class_info = input().split()
+        if class_info[0] not in classes_info:
+            classes_info[class_info[0]] = class_info[2:]
+            continue
+        classes_info[class_info[0]] += class_info[2:]
+
+    for i in classes_info:
+        for j in classes_info[i]:
+            all_classes.add(j)
+        all_classes.add(i)
+
+    """print()
+    print(classes_info)
+    print(all_classes)"""
+
+    requests_lst = []
+    requests_number = int(input())
+    for _ in range(requests_number):
+        requests_lst += [input().split()]
+
+    """print()
+    print(classes_info)
+    print(requests_lst)"""
+    # print(all_classes)
+
+    for i in requests_lst:
+        if len(i) == 1:
+            if i[0] not in all_classes:
+                print('No')
+                continue
+            elif i[0] in all_classes:
+                print('Yes')
+                continue
+        if i[0] not in all_classes or i[1] not in all_classes:
+            print('No')
+            continue
+        if i[0] == i[1]:
+            print('Yes')
+            continue
+        if is_parent(i[0], i[1]) != 'Yes':
+            print('No')
+        else:
+            print(is_parent(i[0], i[1]))
+
+
